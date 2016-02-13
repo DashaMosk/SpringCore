@@ -21,12 +21,16 @@ public class App {
     private Client client;
 
     @Autowired
-    @Qualifier("consoleeventlogger")
+    @Qualifier(value = "consoleeventlogger")
     private EventLogger eventLogger;
 
     @Resource
     @Qualifier("loggermp")
     private Map<EventType, EventLogger> loggermp;
+
+    @Autowired
+    @Qualifier("statisticaspect")
+    private StatisticAspect statisticAspect;
 
     public App(Client client, EventLogger eventLogger, Map<EventType, EventLogger> loggers) {
         this.client = client;
@@ -34,14 +38,16 @@ public class App {
         this.loggermp = loggers;
     }
 
+    public StatisticAspect getStatisticAspect() {
+        return statisticAspect;
+    }
+
     public App() {
     }
 
     public static void main(String[] args) {
         // ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.scan("ua.epam.spring");
-        ctx.refresh();
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
         App app = ctx.getBean(App.class);
         Event event = ctx.getBean(Event.class);
         event.setMsg("Some event for user 1");
@@ -49,6 +55,18 @@ public class App {
         Event event2 = ctx.getBean(Event.class);
         event2.setMsg("Some event for user 2");
         app.logEvent(EventType.INFO, event2);
+        Event event3 = ctx.getBean(Event.class);
+        event3.setMsg("Some event for user 3");
+        app.logEvent(EventType.ERROR, event3);
+        Event event4 = ctx.getBean(Event.class);
+        event4.setMsg("Some event for user 4");
+        app.logEvent(EventType.INFO, event4);
+        Map<Class<?>, Integer> count = app.getStatisticAspect().getCounter();
+        for(Map.Entry<Class<?>, Integer> entry : count.entrySet()) {
+            System.out.println(entry.getKey().toString() + " = " + entry.getValue());
+        }
+
+
     }
 
     private void logEvent(EventType type, Event event) {

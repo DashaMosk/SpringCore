@@ -5,6 +5,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.io.ClassPathResource;
 import ua.epam.spring.loggers.ConsoleEventLogger;
 import ua.epam.spring.loggers.EventLogger;
@@ -17,6 +18,7 @@ import java.util.*;
  * Created by Daria on 11.02.2016.
  */
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @ComponentScan(basePackages = "ua.epam.spring")
 public class AppConfig {
     @Bean
