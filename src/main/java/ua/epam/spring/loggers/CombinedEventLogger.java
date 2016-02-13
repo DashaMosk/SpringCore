@@ -1,23 +1,28 @@
 package ua.epam.spring.loggers;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import ua.epam.spring.beans.Event;
 
-import java.util.ArrayList;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * Created by Daria on 06.02.2016.
  */
+@Component
 public class CombinedEventLogger implements EventLogger {
-    private List<EventLogger> logers;
+    @Resource
+    @Qualifier("loggers")
+    private List<EventLogger> loggers;
 
     public CombinedEventLogger(){}
 
-    public CombinedEventLogger(List<EventLogger> logers) {
-        this.logers = logers;
+    public CombinedEventLogger(List<EventLogger> loggers) {
+        this.loggers = loggers;
     }
     public void logEvent(Event event) {
-        for(EventLogger l : logers) {
+        for(EventLogger l : loggers) {
             l.logEvent(event);
         }
     }
